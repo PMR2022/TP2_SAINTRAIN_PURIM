@@ -51,7 +51,7 @@ class ShowListActivity : AppCompatActivity(), View.OnClickListener {
         recyclerList?.setOnClickListener(this)
 
         refEdtNewItem = findViewById(R.id.newItem)
-        refBtnOK = findViewById(R.id.btnOK)
+        refBtnOK = findViewById(R.id.btnLogin)
         refBtnOK?.setOnClickListener(this)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -82,7 +82,7 @@ class ShowListActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(view: View) {
         when (view.id){
-            R.id.btnOK -> {
+            R.id.btnLogin -> {
                 // Creates new itemTD and update the dataset
                 val itemTD = ItemTD(refEdtNewItem?.text.toString())
                 dataSet!!.add(itemTD)

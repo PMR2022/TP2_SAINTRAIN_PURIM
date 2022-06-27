@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.tp2_pmr" >
+    package="com.example.tp2_pmr">
+
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -17,7 +20,8 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name="com.example.tp2_pmr.activities.SettingsActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:label="@string/title_activity_settings" />
         <activity
             android:name="com.example.tp2_pmr.activities.ShowListActivity"
             android:exported="false" />
