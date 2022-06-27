@@ -28,11 +28,11 @@
         android:minHeight="48dp"
         android:text="Nouvel Item"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btnOK"
+        app:layout_constraintEnd_toStartOf="@+id/btnLogin"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/btnOK"
+        android:id="@+id/btnLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="OK"

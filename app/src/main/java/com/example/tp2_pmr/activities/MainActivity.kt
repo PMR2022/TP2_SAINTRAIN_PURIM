@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         refEdtPseudo = findViewById(R.id.pseudo)
 
-        refBtnOK = findViewById(R.id.btnOK)
+        refBtnOK = findViewById(R.id.btnLogin)
         refBtnOK?.setOnClickListener(this)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(view: View) {
         when(view.id) {
-            R.id.btnOK -> {
+            R.id.btnLogin -> {
                 // The string typed by the user
                 val pseudo = refEdtPseudo?.text.toString()
 
