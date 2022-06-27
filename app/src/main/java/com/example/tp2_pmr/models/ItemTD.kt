@@ -1,4 +1,4 @@
-package com.example.tp2_pmr
+package com.example.tp2_pmr.models
 
 class ItemTD(private var desc: String = "",private var done: Boolean = false) {
     constructor(desc: String) : this(desc, false)

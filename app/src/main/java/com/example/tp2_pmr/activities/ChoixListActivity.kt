@@ -12,9 +12,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.tp2_pmr.ListTD
-import com.example.tp2_pmr.ListTdAdapter
-import com.example.tp2_pmr.Profile
+import com.example.tp2_pmr.models.ListTD
+import com.example.tp2_pmr.adapters.ListTdAdapter
+import com.example.tp2_pmr.models.Profile
 import com.example.tp2_pmr.R
 import com.google.gson.Gson
 

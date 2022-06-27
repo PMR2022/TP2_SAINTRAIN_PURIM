@@ -13,6 +13,10 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tp2_pmr.*
+import com.example.tp2_pmr.adapters.ItemTdAdapter
+import com.example.tp2_pmr.models.ItemTD
+import com.example.tp2_pmr.models.ListTD
+import com.example.tp2_pmr.models.Profile
 import com.google.gson.Gson
 
 class ShowListActivity : AppCompatActivity(), View.OnClickListener {

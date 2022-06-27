@@ -8,15 +8,21 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.example.tp2_pmr.Profile
+import com.example.tp2_pmr.models.Profile
+import com.example.tp2_pmr.api.Connector
 import com.example.tp2_pmr.R
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
-
+    val apiConnector: Connector by lazy { Connector(this.application) }
     private var sharedPreferences: SharedPreferences? = null
     private var refBtnOK: Button? = null
     private var refEdtPseudo: EditText? = null
@@ -41,6 +47,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         return true
     }
 
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_preferences -> {
@@ -57,6 +64,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         return true
     }
 
+    private val mainActivityScope = CoroutineScope(
+        SupervisorJob() + Dispatchers.Main
+    )
+
     override fun onClick(view: View) {
         when(view.id) {
             R.id.btnOK -> {
@@ -72,6 +83,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                         apply()
                     }
                 }
+                // Test
+                mainActivityScope.launch {
+                    try{
+                        val hash = apiConnector.login("tom","web").hash
+                        Toast.makeText(applicationContext, hash, Toast.LENGTH_LONG).show()
+                    } catch(exception:Exception){
+                        Toast.makeText(applicationContext, "Erreur connexion", Toast.LENGTH_LONG).show()
+                    }
+                }
 
                 // Bundles the pseudo and start choixListActivity
                 val bundle = Bundle().apply {
@@ -80,7 +100,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 val choixListIntent = Intent(this, ChoixListActivity::class.java).apply {
                     putExtras(bundle)
                 }
-                startActivity(choixListIntent)
+                //startActivity(choixListIntent)
             }
         }
     }

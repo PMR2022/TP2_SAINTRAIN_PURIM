@@ -1,4 +1,4 @@
-package com.example.tp2_pmr
+package com.example.tp2_pmr.models
 
 class ListTD(private var title: String = "") {
     private var Items = mutableListOf<ItemTD>();

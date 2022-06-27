@@ -1,4 +1,4 @@
-package com.example.tp2_pmr
+package com.example.tp2_pmr.adapters
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,9 +7,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tp2_pmr.activities.ShowListActivity
+import com.example.tp2_pmr.models.ListTD
+import com.example.tp2_pmr.models.Profile
 
 class ListTdAdapter(
-    private val profile:Profile, private val dataSet: List<ListTD>
+    private val profile: Profile, private val dataSet: List<ListTD>
 ) : RecyclerView.Adapter<ListTdAdapter.ItemViewHolder>(), View.OnClickListener {
 
     override fun getItemCount(): Int = dataSet.size

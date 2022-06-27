@@ -1,13 +1,15 @@
-package com.example.tp2_pmr
+package com.example.tp2_pmr.adapters
 
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tp2_pmr.models.ItemTD
+import com.example.tp2_pmr.models.Profile
 import com.google.gson.Gson
 
 class ItemTdAdapter(
-    private val profile:Profile, private val dataSet: List<ItemTD>
+    private val profile: Profile, private val dataSet: List<ItemTD>
 ) : RecyclerView.Adapter<ItemTdAdapter.ItemViewHolder>(), View.OnClickListener {
 
     override fun getItemCount(): Int = dataSet.size
