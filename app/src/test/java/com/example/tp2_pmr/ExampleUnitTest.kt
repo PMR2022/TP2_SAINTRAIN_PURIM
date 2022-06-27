@@ -1,4 +1,4 @@
-package com.example.tp1_pmr
+package com.example.tp2_pmr
 
 import org.junit.Test
 

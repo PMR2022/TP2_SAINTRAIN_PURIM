@@ -1,4 +1,4 @@
-package com.example.tp1_pmr.activities
+package com.example.tp2_pmr.activities
 
 import android.content.Intent
 import android.content.SharedPreferences
@@ -10,8 +10,8 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.example.tp1_pmr.Profile
-import com.example.tp1_pmr.R
+import com.example.tp2_pmr.Profile
+import com.example.tp2_pmr.R
 import com.google.gson.Gson
 
 

@@ -1,4 +1,4 @@
-package com.example.tp1_pmr
+package com.example.tp2_pmr
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.tp1_pmr.activities.ShowListActivity
+import com.example.tp2_pmr.activities.ShowListActivity
 
 class ListTdAdapter(
     private val profile:Profile, private val dataSet: List<ListTD>

@@ -1,4 +1,4 @@
-package com.example.tp1_pmr.activities
+package com.example.tp2_pmr.activities
 
 import android.content.Intent
 import android.content.SharedPreferences
@@ -12,7 +12,7 @@ import android.widget.EditText
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.tp1_pmr.*
+import com.example.tp2_pmr.*
 import com.google.gson.Gson
 
 class ShowListActivity : AppCompatActivity(), View.OnClickListener {

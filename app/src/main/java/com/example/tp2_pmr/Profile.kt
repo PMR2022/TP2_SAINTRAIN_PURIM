@@ -1,4 +1,4 @@
-package com.example.tp1_pmr
+package com.example.tp2_pmr
 
 class Profile(private var login: String = "", private var Lists: MutableList<ListTD> = mutableListOf<ListTD>()){
     constructor(Lists: MutableList<ListTD>) : this("",Lists);

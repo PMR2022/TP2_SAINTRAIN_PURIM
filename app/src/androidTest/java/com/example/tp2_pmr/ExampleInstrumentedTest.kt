@@ -1,4 +1,4 @@
-package com.example.tp1_pmr
+package com.example.tp2_pmr
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
