@@ -13,13 +13,18 @@ import androidx.appcompat.widget.Toolbar
 import com.example.tp2_pmr.Profile
 import com.example.tp2_pmr.R
 import com.google.gson.Gson
+import java.io.IOException
 
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private var sharedPreferences: SharedPreferences? = null
-    private var refBtnOK: Button? = null
-    private var refEdtPseudo: EditText? = null
+    private lateinit var refBtnLogin: Button
+    private lateinit var refBtnNewUser: Button
+    private lateinit var refEdtPseudo: EditText
+    private lateinit var refEdtPass: EditText
+    private lateinit var refEdtNewPseudo: EditText
+    private lateinit var refEdtNewPass: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,9 +33,19 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         sharedPreferences = getSharedPreferences("Profiles",0)
 
         refEdtPseudo = findViewById(R.id.pseudo)
+        refEdtPass = findViewById(R.id.pass)
+        refEdtNewPseudo = findViewById(R.id.newPseudo)
+        refEdtNewPass = findViewById(R.id.newPass)
 
-        refBtnOK = findViewById(R.id.btnLogin)
-        refBtnOK?.setOnClickListener(this)
+        refBtnLogin = findViewById(R.id.btnLogin)
+        refBtnNewUser = findViewById(R.id.btnNewUser)
+        refBtnLogin.setOnClickListener(this)
+        refBtnNewUser.setOnClickListener(this)
+
+        if (!isConnected()) {
+            refBtnLogin.isEnabled = false
+            refBtnNewUser.isEnabled = false
+        }
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -44,7 +59,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_preferences -> {
-                val pseudo = refEdtPseudo?.text.toString()
+                val pseudo = refEdtPseudo.text.toString()
                 val bundle = Bundle().apply {
                     putString("pseudo", pseudo)
                 }
@@ -61,7 +76,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         when(view.id) {
             R.id.btnLogin -> {
                 // The string typed by the user
-                val pseudo = refEdtPseudo?.text.toString()
+                val pseudo = refEdtPseudo.text.toString()
 
                 // Creates a new profile if necessary
                 if (sharedPreferences?.contains(pseudo) == false) {
@@ -83,5 +98,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 startActivity(choixListIntent)
             }
         }
+    }
+
+    @Throws(InterruptedException::class, IOException::class)
+    fun isConnected(): Boolean {
+        val command = "ping -i 5 -c 1 tomnab.fr"
+        return Runtime.getRuntime().exec(command).waitFor() == 0
     }
 }
