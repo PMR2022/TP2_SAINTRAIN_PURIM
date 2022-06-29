@@ -99,22 +99,27 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 }
                 // Test
                 mainActivityScope.launch {
+                    var bundle = Bundle()
                     try{
                         val hash = apiConnector.login("tom","web").hash
+                        bundle = bundle.apply {
+                            putString("pseudo", pseudo)
+                            putString("hash", hash)
+                        }
                         Toast.makeText(applicationContext, hash, Toast.LENGTH_LONG).show()
                     } catch(exception:Exception){
                         Toast.makeText(applicationContext, "Erreur connexion", Toast.LENGTH_LONG).show()
+                        bundle = bundle.apply {
+                            putString("pseudo", pseudo)
+                        }
+                    } finally {
+                        // Bundles the pseudo and start choixListActivity
+                        val choixListIntent = Intent(applicationContext, ChoixListActivity::class.java).apply {
+                            putExtras(bundle)
+                        }
+                        startActivity(choixListIntent)
                     }
                 }
-
-                // Bundles the pseudo and start choixListActivity
-                val bundle = Bundle().apply {
-                    putString("pseudo", pseudo)
-                }
-                val choixListIntent = Intent(this, ChoixListActivity::class.java).apply {
-                    putExtras(bundle)
-                }
-                //startActivity(choixListIntent)
             }
         }
     }

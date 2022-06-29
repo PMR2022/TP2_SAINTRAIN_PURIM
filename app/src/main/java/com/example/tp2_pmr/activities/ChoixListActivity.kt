@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,9 +17,15 @@ import com.example.tp2_pmr.models.ListTD
 import com.example.tp2_pmr.adapters.ListTdAdapter
 import com.example.tp2_pmr.models.Profile
 import com.example.tp2_pmr.R
+import com.example.tp2_pmr.api.Connector
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 class ChoixListActivity : AppCompatActivity(), View.OnClickListener {
+    val apiConnector: Connector by lazy { Connector(this.application) }
     private var sharedPreferences: SharedPreferences? = null
     private var profile: Profile? = null
     private var dataSet: MutableList<ListTD>? = null
@@ -27,23 +34,13 @@ class ChoixListActivity : AppCompatActivity(), View.OnClickListener {
     private var refBtnOK: Button? = null
     private var refEdtNewList: EditText? = null
 
+    private val choixListActivityScope = CoroutineScope(
+        SupervisorJob() + Dispatchers.Main
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_choix_list)
-
-        sharedPreferences = getSharedPreferences("Profiles",0)
-
-        // Gets profile from the bundle
-        val extras = intent.extras
-        val pseudo = extras?.getString("pseudo")
-        val jsonProfile = sharedPreferences?.getString(pseudo,"DEFAULT")
-        profile = Gson().fromJson(jsonProfile, Profile::class.java)
-
-        dataSet = profile?.getLists()
-
-        recyclerList = findViewById(R.id.list)
-        recyclerList?.adapter = ListTdAdapter(profile!!,dataSet!!)
-        recyclerList?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         refEdtNewList = findViewById(R.id.newList)
         refBtnOK = findViewById(R.id.btnLogin)
@@ -51,6 +48,29 @@ class ChoixListActivity : AppCompatActivity(), View.OnClickListener {
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
+
+        sharedPreferences = getSharedPreferences("Profiles",0)
+        // Gets profile from the bundle
+        val extras = intent.extras
+        val pseudo = extras?.getString("pseudo")
+        val hash = extras?.getString("hash")
+        choixListActivityScope.launch {
+            if(hash != null) {
+                profile = Profile(pseudo!!)
+                val lists = apiConnector.getLists(hash)
+                for (list in lists.lists){
+                    profile!!.addList(ListTD(list.label))
+                }
+                dataSet = profile?.getLists()
+            } else {
+                val jsonProfile = sharedPreferences?.getString(pseudo, "DEFAULT")
+                profile = Gson().fromJson(jsonProfile, Profile::class.java)
+                dataSet = profile?.getLists()
+            }
+            recyclerList = findViewById(R.id.list)
+            recyclerList?.adapter = ListTdAdapter(profile!!,dataSet!!)
+            recyclerList?.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
