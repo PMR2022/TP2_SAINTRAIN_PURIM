@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -36,7 +37,6 @@ class ShowListActivity : AppCompatActivity(), View.OnClickListener {
         val extras = intent.extras
         val pseudo = extras?.getString("pseudo")
         val listTdIndex = extras?.getInt("listTD index")
-
         // Gets listTD from the bundle
         sharedPreferences = getSharedPreferences("Profiles",0)
         val jsonProfile = sharedPreferences?.getString(pseudo,"DEFAULT")

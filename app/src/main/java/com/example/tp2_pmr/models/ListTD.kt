@@ -1,6 +1,6 @@
 package com.example.tp2_pmr.models
 
-class ListTD(private var title: String = "", val id: Int = 0) {
+class ListTD(private var title: String = "", val id: Int = -1) {
     private var Items = mutableListOf<ItemTD>();
     fun setTitle(newTitle: String){
         title = newTitle;

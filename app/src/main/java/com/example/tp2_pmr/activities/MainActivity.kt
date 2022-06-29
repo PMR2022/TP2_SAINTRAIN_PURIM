@@ -106,7 +106,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                             putString("pseudo", pseudo)
                             putString("hash", hash)
                         }
-                        Toast.makeText(applicationContext, hash, Toast.LENGTH_LONG).show()
                     } catch(exception:Exception){
                         Toast.makeText(applicationContext, "Erreur connexion", Toast.LENGTH_LONG).show()
                         bundle = bundle.apply {

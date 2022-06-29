@@ -14,8 +14,9 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tp2_pmr.models.ListTD
-import com.example.tp2_pmr.adapters.ListTdAdapter
+import com.example.tp2_pmr.models.ItemTD
 import com.example.tp2_pmr.models.Profile
+import com.example.tp2_pmr.adapters.ListTdAdapter
 import com.example.tp2_pmr.R
 import com.example.tp2_pmr.api.Connector
 import com.google.gson.Gson
@@ -57,11 +58,24 @@ class ChoixListActivity : AppCompatActivity(), View.OnClickListener {
         choixListActivityScope.launch {
             if(hash != null) {
                 profile = Profile(pseudo!!)
-                val lists = apiConnector.getLists(hash)
-                for (list in lists.lists){
-                    profile!!.addList(ListTD(list.label))
+                val apiLists = apiConnector.getLists(hash)
+                for (apiList in apiLists.lists){
+                    val apiItems = apiConnector.getItems(hash, apiList.id)
+                    val newItems = mutableListOf<ItemTD>()
+                    for (apiItem in apiItems.items){
+                        newItems.add(ItemTD(apiItem.label,apiItem.checked))
+                    }
+                    val newList = ListTD(apiList.label)
+                    newList.setItems(newItems)
+                    profile!!.addList(newList)
                 }
                 dataSet = profile?.getLists()
+                // Saves new user profile
+                val profileGson = Gson().toJson(profile)
+                sharedPreferences?.edit()?.apply {
+                    putString(profile?.getLogin(), profileGson)
+                    apply()
+                }
             } else {
                 val jsonProfile = sharedPreferences?.getString(pseudo, "DEFAULT")
                 profile = Gson().fromJson(jsonProfile, Profile::class.java)
