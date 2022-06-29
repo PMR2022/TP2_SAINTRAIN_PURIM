@@ -1,7 +1,8 @@
 package com.example.tp2_pmr.models
 
-class Profile(private var login: String = "", private var Lists: MutableList<ListTD> = mutableListOf<ListTD>()){
-    constructor(Lists: MutableList<ListTD>) : this("",Lists);
+class Profile(private var login: String = "", private var Lists: MutableList<ListTD> = mutableListOf<ListTD>(), var hash: String? = null){
+    constructor(Lists: MutableList<ListTD>) : this("",Lists,null);
+    constructor(login: String, hash: String?) : this(login,mutableListOf<ListTD>(),hash);
     fun getLists(): MutableList<ListTD>{
         return Lists;
     }

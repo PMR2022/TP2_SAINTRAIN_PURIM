@@ -11,10 +11,6 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.settings_activity)
 
-        //val pseudo: String? = intent.getStringExtra("pseudo")
-        //val text : TextView = findViewById(R.id.name)
-        //text.text = "Profile \""+pseudo+"\" logged in"
-
         if (savedInstanceState == null) {
             supportFragmentManager
                 .beginTransaction()

@@ -13,12 +13,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.tp2_pmr.models.ListTD
-import com.example.tp2_pmr.models.ItemTD
-import com.example.tp2_pmr.models.Profile
-import com.example.tp2_pmr.adapters.ListTdAdapter
 import com.example.tp2_pmr.R
+import com.example.tp2_pmr.adapters.ListTdAdapter
 import com.example.tp2_pmr.api.Connector
+import com.example.tp2_pmr.api.apiLists
+import com.example.tp2_pmr.models.ItemTD
+import com.example.tp2_pmr.models.ListTD
+import com.example.tp2_pmr.models.Profile
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -58,18 +59,27 @@ class ChoixListActivity : AppCompatActivity(), View.OnClickListener {
         choixListActivityScope.launch {
             if(hash != null) {
                 profile = Profile(pseudo!!)
-                val apiLists = apiConnector.getLists(hash)
-                for (apiList in apiLists.lists){
-                    val apiItems = apiConnector.getItems(hash, apiList.id)
-                    val newItems = mutableListOf<ItemTD>()
-                    for (apiItem in apiItems.items){
-                        newItems.add(ItemTD(apiItem.label,apiItem.checked))
-                    }
-                    val newList = ListTD(apiList.label)
-                    newList.setItems(newItems)
-                    profile!!.addList(newList)
+                var apiLists: apiLists?
+                try {
+                    apiLists = apiConnector.getLists(hash)
+                }catch(exc: Exception){
+                    Toast.makeText(applicationContext,"Using local DB",Toast.LENGTH_SHORT).show()
+                    apiLists = apiConnector.getLists(hash)
+                    //apiLists = apiConnector.dbGetLists(hash)
                 }
-                dataSet = profile?.getLists()
+                if (apiLists != null) {
+                    for (apiList in apiLists.lists){
+                        val newItems = mutableListOf<ItemTD>()
+                        for (apiItem in apiConnector.getItems(hash, apiList.id).items){
+                            newItems.add(ItemTD(apiItem.label,apiItem.checked,apiItem.id,apiItem.id))
+                        }
+                        val newList = ListTD(apiList.label,apiList.id)
+                        newList.setItems(newItems)
+                        profile!!.addList(newList)
+                    }
+                } else {
+                    Toast.makeText(applicationContext,"API and DB failed to connect",Toast.LENGTH_SHORT).show()
+                }
                 // Saves new user profile
                 val profileGson = Gson().toJson(profile)
                 sharedPreferences?.edit()?.apply {
@@ -79,8 +89,8 @@ class ChoixListActivity : AppCompatActivity(), View.OnClickListener {
             } else {
                 val jsonProfile = sharedPreferences?.getString(pseudo, "DEFAULT")
                 profile = Gson().fromJson(jsonProfile, Profile::class.java)
-                dataSet = profile?.getLists()
             }
+            dataSet = profile?.getLists()
             recyclerList = findViewById(R.id.list)
             recyclerList?.adapter = ListTdAdapter(profile!!,dataSet!!)
             recyclerList?.layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
@@ -113,10 +123,22 @@ class ChoixListActivity : AppCompatActivity(), View.OnClickListener {
         when (view.id){
             R.id.btnLogin -> {
                 //Creates new listTD and update the dataset
-                val listTD = ListTD(refEdtNewList?.text.toString())
+                val listName = refEdtNewList?.text.toString()
+                // Creates with name and id of the current size
+                val listTD = ListTD(listName,dataSet!!.size,profile?.hash)
                 dataSet!!.add(listTD)
                 recyclerList?.adapter?.notifyItemInserted(dataSet!!.size -1)
-
+                // Inserts on API
+                choixListActivityScope.launch {
+                    try{
+                        val hash = intent.extras?.getString("hash")
+                        if(hash != null){
+                            apiConnector.setList(hash, listName)
+                        }
+                    } catch(exc: Exception){
+                        Toast.makeText(applicationContext, "Failed to save to API or DB", Toast.LENGTH_SHORT).show()
+                    }
+                }
                 // Saves new user profile
                 val profileGson = Gson().toJson(profile)
                 sharedPreferences?.edit()?.apply {

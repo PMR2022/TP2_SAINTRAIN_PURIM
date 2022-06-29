@@ -15,12 +15,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tp2_pmr.*
 import com.example.tp2_pmr.adapters.ItemTdAdapter
+import com.example.tp2_pmr.api.Connector
 import com.example.tp2_pmr.models.ItemTD
 import com.example.tp2_pmr.models.ListTD
 import com.example.tp2_pmr.models.Profile
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 class ShowListActivity : AppCompatActivity(), View.OnClickListener {
+    val apiConnector: Connector by lazy { Connector(this.application) }
+
     private var sharedPreferences: SharedPreferences? = null
     private var profile: Profile? = null
     private var listTD: ListTD? = null
@@ -29,6 +36,10 @@ class ShowListActivity : AppCompatActivity(), View.OnClickListener {
     private var recyclerList : RecyclerView? = null
     private var refBtnOK: Button? = null
     private var refEdtNewItem: EditText? = null
+
+    private val showListActivityScope = CoroutineScope(
+        SupervisorJob() + Dispatchers.Main
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,11 +94,23 @@ class ShowListActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(view: View) {
         when (view.id){
             R.id.btnLogin -> {
-                // Creates new itemTD and update the dataset
-                val itemTD = ItemTD(refEdtNewItem?.text.toString())
+                // Creates new itemTD with name, current list id size+1 and  and update the dataset
+                val itemName = refEdtNewItem?.text.toString()
+                val listId = intent.extras!!.getInt("listTD index")
+                val itemTD = ItemTD(itemName,false,dataSet!!.size,listId, profile?.hash)
                 dataSet!!.add(itemTD)
                 recyclerList?.adapter?.notifyItemInserted(dataSet!!.size-1)
-
+                // Inserts on API
+                showListActivityScope.launch {
+                    try{
+                        val hash = intent.extras?.getString("hash")
+                        if(hash != null){
+                            apiConnector.setItem(hash,listId,itemName)
+                        }
+                    } catch(exc: Exception){
+                        Toast.makeText(applicationContext, "Failed to save to API", Toast.LENGTH_SHORT).show()
+                    }
+                }
                 // Saves new user profile
                 val profileGson = Gson().toJson(profile)
                 sharedPreferences?.edit()?.apply(){

@@ -87,21 +87,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             R.id.btnLogin -> {
                 // The string typed by the user
                 val pseudo = refEdtPseudo.text.toString()
+                val password = refEdtPass.text.toString()
 
-                // Creates a new profile if necessary
-                if (sharedPreferences?.contains(pseudo) == false) {
-                    val profile = Profile(pseudo)
-                    val profileGson = Gson().toJson(profile)
-                    sharedPreferences?.edit()?.apply() {
-                        putString(pseudo, profileGson)
-                        apply()
-                    }
-                }
                 // Test
                 mainActivityScope.launch {
                     var bundle = Bundle()
+                    var hash: String? = null
                     try{
-                        val hash = apiConnector.login("tom","web").hash
+                        hash = apiConnector.login(pseudo,password).hash
                         bundle = bundle.apply {
                             putString("pseudo", pseudo)
                             putString("hash", hash)
@@ -112,6 +105,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                             putString("pseudo", pseudo)
                         }
                     } finally {
+                        // Creates a new profile if necessary
+                        if (sharedPreferences?.contains(pseudo) == false) {
+                            val profile = Profile(pseudo, hash)
+                            sharedPreferences?.edit()?.apply() {
+                                putString(pseudo, Gson().toJson(profile))
+                                apply()
+                            }
+                        }
                         // Bundles the pseudo and start choixListActivity
                         val choixListIntent = Intent(applicationContext, ChoixListActivity::class.java).apply {
                             putExtras(bundle)
